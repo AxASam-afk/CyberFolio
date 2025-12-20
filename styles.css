@@ -328,35 +328,35 @@ body {
 }
 
 /* Contour extérieur - Bleu (plus grand, avec espace) */
-.animated-box::before {
-    content: '';
+.border-outer {
     position: absolute;
-    top: -20px;
-    left: -20px;
-    right: -20px;
-    bottom: -20px;
-    border: 3px solid transparent;
-    border-top-color: var(--accent-primary);
-    border-right-color: var(--accent-primary);
-    border-radius: 4px;
+    top: -25px;
+    left: -25px;
+    width: calc(100% + 50px);
+    height: calc(100% + 50px);
+    border: 5px solid transparent;
+    border-top: 5px solid var(--accent-primary);
+    border-right: 5px solid var(--accent-primary);
+    border-radius: 8px;
     animation: rotateBorderOuter 3s linear infinite;
     z-index: 1;
+    box-sizing: border-box;
 }
 
 /* Contour intérieur - Vert (plus petit, avec espace entre les deux) */
-.animated-box::after {
-    content: '';
+.border-inner {
     position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    border: 3px solid transparent;
-    border-bottom-color: var(--accent-secondary);
-    border-left-color: var(--accent-secondary);
-    border-radius: 4px;
+    top: -12px;
+    left: -12px;
+    width: calc(100% + 24px);
+    height: calc(100% + 24px);
+    border: 5px solid transparent;
+    border-bottom: 5px solid var(--accent-secondary);
+    border-left: 5px solid var(--accent-secondary);
+    border-radius: 8px;
     animation: rotateBorderInner 3s linear infinite reverse;
     z-index: 1;
+    box-sizing: border-box;
 }
 
 .box-content {
@@ -390,70 +390,18 @@ body {
 @keyframes rotateBorderOuter {
     0% {
         transform: rotate(0deg);
-        border-top-color: var(--accent-primary);
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-left-color: transparent;
-    }
-    25% {
-        border-top-color: var(--accent-primary);
-        border-right-color: var(--accent-primary);
-        border-bottom-color: transparent;
-        border-left-color: transparent;
-    }
-    50% {
-        border-top-color: transparent;
-        border-right-color: var(--accent-primary);
-        border-bottom-color: var(--accent-primary);
-        border-left-color: transparent;
-    }
-    75% {
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: var(--accent-primary);
-        border-left-color: var(--accent-primary);
     }
     100% {
         transform: rotate(360deg);
-        border-top-color: var(--accent-primary);
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-left-color: transparent;
     }
 }
 
 @keyframes rotateBorderInner {
     0% {
         transform: rotate(360deg);
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: var(--accent-secondary);
-        border-left-color: var(--accent-secondary);
-    }
-    25% {
-        border-top-color: transparent;
-        border-right-color: var(--accent-secondary);
-        border-bottom-color: var(--accent-secondary);
-        border-left-color: transparent;
-    }
-    50% {
-        border-top-color: var(--accent-secondary);
-        border-right-color: var(--accent-secondary);
-        border-bottom-color: transparent;
-        border-left-color: transparent;
-    }
-    75% {
-        border-top-color: var(--accent-secondary);
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-        border-left-color: transparent;
     }
     100% {
         transform: rotate(0deg);
-        border-top-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: var(--accent-secondary);
-        border-left-color: var(--accent-secondary);
     }
 }
 
