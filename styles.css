@@ -823,7 +823,7 @@ body {
 }
 
 .project-card.expanded {
-    max-height: 5000px;
+    max-height: 10000px !important;
 }
 
 .project-card:hover {
