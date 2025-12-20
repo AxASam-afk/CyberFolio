@@ -315,40 +315,48 @@ body {
     position: relative;
 }
 
-/* Animation de bordure animée */
+/* Animation de bordure animée - Deux contours séparés qui tournent */
 .animated-box {
     position: relative;
     width: 300px;
     height: 300px;
     margin: auto;
-    color: var(--accent-primary);
-    box-shadow: inset 0 0 0 1px rgba(0, 217, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: transparent;
 }
 
-.animated-box::before,
+/* Contour extérieur - Bleu (plus grand, avec espace) */
+.animated-box::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    border: 3px solid transparent;
+    border-top-color: var(--accent-primary);
+    border-right-color: var(--accent-primary);
+    border-radius: 4px;
+    animation: rotateBorderOuter 3s linear infinite;
+    z-index: 1;
+}
+
+/* Contour intérieur - Vert (plus petit, avec espace entre les deux) */
 .animated-box::after {
     content: '';
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: -1;
-    margin: -15px;
-    box-shadow: inset 0 0 0 2px;
-    animation: clipMe 8s linear infinite;
-}
-
-.animated-box::before {
-    animation-delay: -4s;
-    box-shadow: inset 0 0 0 2px var(--accent-primary);
-}
-
-.animated-box::after {
-    box-shadow: inset 0 0 0 2px var(--accent-secondary);
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 3px solid transparent;
+    border-bottom-color: var(--accent-secondary);
+    border-left-color: var(--accent-secondary);
+    border-radius: 4px;
+    animation: rotateBorderInner 3s linear infinite reverse;
+    z-index: 1;
 }
 
 .box-content {
@@ -357,7 +365,12 @@ body {
     align-items: center;
     justify-content: center;
     gap: var(--spacing-sm);
-    z-index: 1;
+    z-index: 2;
+    position: relative;
+    background-color: rgba(10, 14, 39, 0.9);
+    padding: var(--spacing-md);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
 }
 
 .box-icon {
@@ -374,18 +387,73 @@ body {
     letter-spacing: 2px;
 }
 
-@keyframes clipMe {
-    0%, 100% {
-        clip: rect(0px, 330px, 2px, 0px);
+@keyframes rotateBorderOuter {
+    0% {
+        transform: rotate(0deg);
+        border-top-color: var(--accent-primary);
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
     }
     25% {
-        clip: rect(0px, 2px, 330px, 0px);
+        border-top-color: var(--accent-primary);
+        border-right-color: var(--accent-primary);
+        border-bottom-color: transparent;
+        border-left-color: transparent;
     }
     50% {
-        clip: rect(328px, 330px, 330px, 0px);
+        border-top-color: transparent;
+        border-right-color: var(--accent-primary);
+        border-bottom-color: var(--accent-primary);
+        border-left-color: transparent;
     }
     75% {
-        clip: rect(0px, 330px, 330px, 328px);
+        border-top-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: var(--accent-primary);
+        border-left-color: var(--accent-primary);
+    }
+    100% {
+        transform: rotate(360deg);
+        border-top-color: var(--accent-primary);
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+    }
+}
+
+@keyframes rotateBorderInner {
+    0% {
+        transform: rotate(360deg);
+        border-top-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: var(--accent-secondary);
+        border-left-color: var(--accent-secondary);
+    }
+    25% {
+        border-top-color: transparent;
+        border-right-color: var(--accent-secondary);
+        border-bottom-color: var(--accent-secondary);
+        border-left-color: transparent;
+    }
+    50% {
+        border-top-color: var(--accent-secondary);
+        border-right-color: var(--accent-secondary);
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+    }
+    75% {
+        border-top-color: var(--accent-secondary);
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+    }
+    100% {
+        transform: rotate(0deg);
+        border-top-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: var(--accent-secondary);
+        border-left-color: var(--accent-secondary);
     }
 }
 
@@ -407,29 +475,18 @@ body {
         height: 250px;
     }
     
-    .animated-box::before,
-    .animated-box::after {
-        margin: -8px;
+    .animated-box::before {
+        top: -15px;
+        left: -15px;
+        right: -15px;
+        bottom: -15px;
     }
     
-    .animated-box::before,
     .animated-box::after {
-        margin: -12px;
-    }
-    
-    @keyframes clipMe {
-        0%, 100% {
-            clip: rect(0px, 274px, 2px, 0px);
-        }
-        25% {
-            clip: rect(0px, 2px, 274px, 0px);
-        }
-        50% {
-            clip: rect(272px, 274px, 274px, 0px);
-        }
-        75% {
-            clip: rect(0px, 274px, 274px, 272px);
-        }
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
     }
     
     .box-icon {
@@ -447,29 +504,18 @@ body {
         height: 200px;
     }
     
-    .animated-box::before,
-    .animated-box::after {
-        margin: -6px;
+    .animated-box::before {
+        top: -12px;
+        left: -12px;
+        right: -12px;
+        bottom: -12px;
     }
     
-    .animated-box::before,
     .animated-box::after {
-        margin: -10px;
-    }
-    
-    @keyframes clipMe {
-        0%, 100% {
-            clip: rect(0px, 220px, 2px, 0px);
-        }
-        25% {
-            clip: rect(0px, 2px, 220px, 0px);
-        }
-        50% {
-            clip: rect(218px, 220px, 220px, 0px);
-        }
-        75% {
-            clip: rect(0px, 220px, 220px, 218px);
-        }
+        top: -6px;
+        left: -6px;
+        right: -6px;
+        bottom: -6px;
     }
     
     .box-icon {
