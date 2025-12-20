@@ -362,29 +362,114 @@ body {
 .box-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
     z-index: 2;
     position: relative;
-    background-color: rgba(10, 14, 39, 0.9);
-    padding: var(--spacing-md);
+    background-color: rgba(10, 14, 39, 0.95);
+    padding: 0;
     border-radius: 8px;
     backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    min-height: 180px;
 }
 
-.box-icon {
-    font-size: 4rem;
-    animation: pulse 2s ease-in-out infinite;
+/* Terminal de code */
+.code-terminal {
+    width: 100%;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
-.box-text {
+.terminal-header {
+    background-color: var(--bg-secondary);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.terminal-dot.red {
+    background-color: var(--accent-danger);
+}
+
+.terminal-dot.yellow {
+    background-color: var(--accent-warning);
+}
+
+.terminal-dot.green {
+    background-color: var(--accent-secondary);
+}
+
+.terminal-title {
+    margin-left: auto;
     font-family: var(--font-mono);
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.terminal-body {
+    padding: 1rem;
+    min-height: 140px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.code-line {
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+    min-height: 1.4em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.code-line .code-keyword {
     color: var(--accent-primary);
-    text-transform: uppercase;
-    letter-spacing: 2px;
+}
+
+.code-line .code-string {
+    color: var(--accent-secondary);
+}
+
+.code-line .code-comment {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.code-line .code-number {
+    color: var(--accent-warning);
+}
+
+.code-cursor {
+    display: inline-block;
+    color: var(--accent-primary);
+    animation: blink 1s infinite;
+    font-weight: bold;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
 }
 
 @keyframes rotateBorderOuter {
@@ -437,12 +522,14 @@ body {
         bottom: -8px;
     }
     
-    .box-icon {
-        font-size: 3rem;
+    .terminal-body {
+        font-size: 0.7rem;
+        min-height: 120px;
+        padding: 0.75rem;
     }
     
-    .box-text {
-        font-size: 1rem;
+    .box-content {
+        min-height: 160px;
     }
 }
 
@@ -466,12 +553,18 @@ body {
         bottom: -6px;
     }
     
-    .box-icon {
-        font-size: 2.5rem;
+    .terminal-body {
+        font-size: 0.65rem;
+        min-height: 100px;
+        padding: 0.5rem;
     }
     
-    .box-text {
-        font-size: 0.875rem;
+    .box-content {
+        min-height: 140px;
+    }
+    
+    .terminal-header {
+        padding: 0.4rem 0.75rem;
     }
 }
 

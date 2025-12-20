@@ -290,6 +290,132 @@ window.addEventListener('error', function(e) {
 });
 
 // ============================================
+// TYPEWRITER EFFECT - CODE TERMINAL
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const codeLines = [
+        document.getElementById('codeLine1'),
+        document.getElementById('codeLine2'),
+        document.getElementById('codeLine3'),
+        document.getElementById('codeLine4')
+    ];
+
+    // Différents types de code à afficher
+    const codeScenes = [
+        {
+            lines: [
+                '<span class="code-comment"># Reconnaissance réseau</span>',
+                '<span class="code-keyword">nmap</span> -sV -sC <span class="code-string">target.com</span>',
+                '<span class="code-comment"># Ports ouverts détectés</span>',
+                '<span class="code-keyword">✓</span> <span class="code-number">80</span>, <span class="code-number">443</span>, <span class="code-number">22</span>'
+            ]
+        },
+        {
+            lines: [
+                '<span class="code-comment"># Énumération web</span>',
+                '<span class="code-keyword">gobuster</span> dir -u <span class="code-string">target.com</span> -w <span class="code-string">wordlist.txt</span>',
+                '<span class="code-comment"># Répertoires trouvés</span>',
+                '<span class="code-keyword">/admin</span>, <span class="code-keyword">/api</span>, <span class="code-keyword">/backup</span>'
+            ]
+        },
+        {
+            lines: [
+                '<span class="code-comment"># Test d\'injection SQL</span>',
+                '<span class="code-keyword">sqlmap</span> -u <span class="code-string">"target.com/login"</span> --dbs',
+                '<span class="code-comment"># Vulnérabilité détectée</span>',
+                '<span class="code-keyword">[CRITICAL]</span> SQL Injection exploitable'
+            ]
+        },
+        {
+            lines: [
+                '<span class="code-comment"># Analyse de sécurité</span>',
+                '<span class="code-keyword">burpsuite</span> --scan <span class="code-string">target.com</span>',
+                '<span class="code-comment"># Résultats</span>',
+                '<span class="code-keyword">8</span> vulnérabilités critiques identifiées'
+            ]
+        },
+        {
+            lines: [
+                '<span class="code-comment"># Scan de vulnérabilités</span>',
+                '<span class="code-keyword">nikto</span> -h <span class="code-string">target.com</span>',
+                '<span class="code-comment"># CVE détectés</span>',
+                '<span class="code-keyword">CVE-2023-XXXX</span> - Score: <span class="code-number">9.8</span>'
+            ]
+        },
+        {
+            lines: [
+                '<span class="code-comment"># Analyse de trafic</span>',
+                '<span class="code-keyword">wireshark</span> -r <span class="code-string">capture.pcap</span>',
+                '<span class="code-comment"># Activité suspecte</span>',
+                '<span class="code-keyword">[ALERT]</span> Tentative d\'intrusion détectée'
+            ]
+        }
+    ];
+
+    let currentScene = 0;
+    let currentLine = 0;
+    let currentChar = 0;
+    let isDeleting = false;
+    let typingSpeed = 50;
+    let deletingSpeed = 30;
+    let pauseBetweenLines = 500;
+    let pauseBetweenScenes = 2000;
+
+    function typeCode() {
+        const scene = codeScenes[currentScene];
+        const line = codeLines[currentLine];
+
+        if (!line) return;
+
+        if (currentLine >= scene.lines.length) {
+            // Toutes les lignes de la scène sont affichées
+            setTimeout(() => {
+                // Passer à la scène suivante
+                currentScene = (currentScene + 1) % codeScenes.length;
+                currentLine = 0;
+                currentChar = 0;
+                isDeleting = false;
+                
+                // Effacer toutes les lignes
+                codeLines.forEach(lineEl => {
+                    if (lineEl) lineEl.innerHTML = '';
+                });
+                
+                typeCode();
+            }, pauseBetweenScenes);
+            return;
+        }
+
+        const targetText = scene.lines[currentLine];
+
+        if (!isDeleting && currentChar < targetText.length) {
+            // Écrire
+            line.innerHTML = targetText.substring(0, currentChar + 1);
+            currentChar++;
+            setTimeout(typeCode, typingSpeed);
+        } else if (!isDeleting && currentChar === targetText.length) {
+            // Ligne complète, pause puis passer à la ligne suivante
+            setTimeout(() => {
+                currentLine++;
+                currentChar = 0;
+                typeCode();
+            }, pauseBetweenLines);
+        } else {
+            // Ne pas supprimer, passer directement à la ligne suivante
+            currentLine++;
+            currentChar = 0;
+            typeCode();
+        }
+    }
+
+    // Démarrer l'animation
+    if (codeLines[0]) {
+        typeCode();
+    }
+});
+
+// ============================================
 // CONSOLE MESSAGE (BONUS)
 // ============================================
 
