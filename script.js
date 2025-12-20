@@ -416,6 +416,246 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
+// BACKGROUND ANIMÉ - BULLES FLOTTANTES
+// ============================================
+
+(function() {
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    const CONFIG = {
+        // Nombre de bulles (ajusté selon la taille de l'écran)
+        bubbleCount: {
+            mobile: 8,
+            tablet: 12,
+            desktop: 20
+        },
+        // Vitesse minimale et maximale
+        minSpeed: 0.3,
+        maxSpeed: 0.8,
+        // Rayon minimal et maximal des bulles
+        minRadius: 40,
+        maxRadius: 120,
+        // Opacité des bulles
+        opacity: 0.15,
+        // Flou (blur)
+        blur: 40,
+        // Interaction souris (bonus)
+        mouseInteraction: true,
+        mouseRadius: 150,
+        mouseStrength: 0.02
+    };
+
+    // Vérifier si l'animation est désactivée (prefers-reduced-motion)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+        return; // Ne pas initialiser l'animation
+    }
+
+    // ============================================
+    // CLASSE BUBBLE
+    // ============================================
+    class Bubble {
+        constructor(canvas, colors) {
+            this.canvas = canvas;
+            this.colors = colors;
+            
+            // Taille aléatoire
+            this.radius = Math.random() * (CONFIG.maxRadius - CONFIG.minRadius) + CONFIG.minRadius;
+            
+            // Position initiale aléatoire
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            
+            // Vitesse aléatoire
+            this.dx = (Math.random() - 0.5) * (CONFIG.maxSpeed - CONFIG.minSpeed) + CONFIG.minSpeed;
+            this.dy = (Math.random() - 0.5) * (CONFIG.maxSpeed - CONFIG.minSpeed) + CONFIG.minSpeed;
+            
+            // Couleur aléatoire parmi les couleurs du thème
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Opacité légèrement variable
+            this.opacity = CONFIG.opacity * (0.7 + Math.random() * 0.3);
+        }
+
+        update(mouseX, mouseY) {
+            // Interaction avec la souris (repulsion douce)
+            if (CONFIG.mouseInteraction && mouseX !== null && mouseY !== null) {
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < CONFIG.mouseRadius) {
+                    const force = (CONFIG.mouseRadius - distance) / CONFIG.mouseRadius;
+                    this.dx += (dx / distance) * force * CONFIG.mouseStrength;
+                    this.dy += (dy / distance) * force * CONFIG.mouseStrength;
+                }
+            }
+
+            // Mise à jour de la position
+            this.x += this.dx;
+            this.y += this.dy;
+
+            // Rebond sur les bords
+            if (this.x - this.radius < 0 || this.x + this.radius > this.canvas.width) {
+                this.dx = -this.dx;
+                this.x = Math.max(this.radius, Math.min(this.canvas.width - this.radius, this.x));
+            }
+            
+            if (this.y - this.radius < 0 || this.y + this.radius > this.canvas.height) {
+                this.dy = -this.dy;
+                this.y = Math.max(this.radius, Math.min(this.canvas.height - this.radius, this.y));
+            }
+        }
+
+        draw(ctx) {
+            // Créer un gradient radial pour l'effet de lumière
+            const gradient = ctx.createRadialGradient(
+                this.x - this.radius * 0.3,
+                this.y - this.radius * 0.3,
+                0,
+                this.x,
+                this.y,
+                this.radius
+            );
+            
+            gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity * 1.5})`);
+            gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`);
+            gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
+
+            // Dessiner la bulle avec le gradient
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Effet de flou avec shadowBlur
+            ctx.shadowBlur = CONFIG.blur;
+            ctx.shadowColor = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    // ============================================
+    // FONCTION POUR CONVERTIR HEX EN RGB
+    // ============================================
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : { r: 0, g: 217, b: 255 }; // Fallback
+    }
+
+    // ============================================
+    // INITIALISATION
+    // ============================================
+    function initBubbles() {
+        const canvas = document.getElementById('bubblesCanvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        
+        // Récupérer les couleurs du thème depuis CSS
+        const computedStyle = getComputedStyle(document.documentElement);
+        const primaryColor = computedStyle.getPropertyValue('--accent-primary').trim();
+        const secondaryColor = computedStyle.getPropertyValue('--accent-secondary').trim();
+        
+        // Convertir en RGB
+        const colors = [
+            hexToRgb(primaryColor),
+            hexToRgb(secondaryColor)
+        ];
+
+        // Fonction pour redimensionner le canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Déterminer le nombre de bulles selon la taille de l'écran
+        function getBubbleCount() {
+            const width = window.innerWidth;
+            if (width < 768) return CONFIG.bubbleCount.mobile;
+            if (width < 1024) return CONFIG.bubbleCount.tablet;
+            return CONFIG.bubbleCount.desktop;
+        }
+
+        // Créer les bulles
+        const bubbles = [];
+        const bubbleCount = getBubbleCount();
+        
+        for (let i = 0; i < bubbleCount; i++) {
+            bubbles.push(new Bubble(canvas, colors));
+        }
+
+        // Position de la souris
+        let mouseX = null;
+        let mouseY = null;
+
+        if (CONFIG.mouseInteraction) {
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            document.addEventListener('mouseleave', () => {
+                mouseX = null;
+                mouseY = null;
+            });
+        }
+
+        // Fonction d'animation
+        let animationId;
+        function animate() {
+            // Effacer le canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Mettre à jour et dessiner chaque bulle
+            bubbles.forEach(bubble => {
+                bubble.update(mouseX, mouseY);
+                bubble.draw(ctx);
+            });
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Démarrer l'animation
+        animate();
+
+        // Optimisation : pause l'animation quand la page n'est pas visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(animationId);
+            } else {
+                animate();
+            }
+        });
+    }
+
+    // Attendre que le DOM soit chargé
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBubbles);
+    } else {
+        initBubbles();
+    }
+
+    // Réinitialiser lors du changement de thème
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            setTimeout(initBubbles, 100); // Attendre que le thème change
+        });
+    }
+})();
+
+// ============================================
 // CONSOLE MESSAGE (BONUS)
 // ============================================
 
