@@ -882,7 +882,7 @@ body {
     color: var(--accent-warning);
 }
 
-.tag-web, .tag-siem, .tag-htb {
+.tag-web, .tag-siem, .tag-htb, .tag-audit {
     background-color: rgba(148, 163, 184, 0.2);
     color: var(--text-secondary);
 }

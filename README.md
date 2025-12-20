@@ -69,7 +69,7 @@ CyberFolio/
 
 - **Nom/Pseudo** : Ligne 30
   ```html
-  <span class="name">[Votre Nom / Pseudo]</span>
+  <span class="name">Lexiu</span>
   ```
 
 - **Titre** : Ligne 33

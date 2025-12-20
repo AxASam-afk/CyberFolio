@@ -392,68 +392,131 @@
             <!-- Grille de projets -->
             <div class="projects-grid" id="projectsGrid">
                 <!-- Projet 1 -->
-                <article class="project-card" data-category="offensif" data-featured="true">
+                <article class="project-card" data-category="defensif" data-featured="true">
                     <div class="project-badge">⭐ Projet phare</div>
                     <div class="project-header">
-                        <h3 class="project-title">Analyse de vulnérabilités web - Application e-commerce</h3>
+                        <h3 class="project-title">🔐 Audit de Sécurité – Site E-commerce Shopify</h3>
                         <div class="project-tags">
-                            <span class="tag tag-offensif">Offensif</span>
+                            <span class="tag tag-defensif">Défensif</span>
                             <span class="tag tag-web">Web</span>
+                            <span class="tag tag-audit">Audit</span>
                         </div>
                     </div>
                     <div class="project-content">
                         <div class="project-section">
                             <h4>🎯 Objectif</h4>
-                            <p>Identifier et exploiter les vulnérabilités d'une application web e-commerce dans un environnement de lab sécurisé.</p>
+                            <p>Réaliser un audit de sécurité non intrusif d'un site e-commerce Shopify afin d'identifier les faiblesses de configuration, évaluer la surface d'attaque exposée, vérifier l'alignement avec les bonnes pratiques OWASP et proposer des recommandations concrètes adaptées à Shopify.</p>
+                            <p><strong>⚠️ Audit réalisé avec l'accord du propriétaire du site, sans exploitation intrusive.</strong></p>
                         </div>
                         <div class="project-section">
                             <h4>📋 Contexte</h4>
-                            <p>Projet personnel réalisé sur une application DVWA (Damn Vulnerable Web Application) déployée localement.</p>
-                        </div>
-                        <div class="project-section">
-                            <h4>🔓 Problème de sécurité traité</h4>
                             <ul>
-                                <li>Injection SQL dans le formulaire de login</li>
-                                <li>XSS (Cross-Site Scripting) stocké et réfléchi</li>
-                                <li>CSRF (Cross-Site Request Forgery)</li>
-                                <li>Authentification faible</li>
+                                <li><strong>Client :</strong> Projet personnel (site d'un ami – audit autorisé)</li>
+                                <li><strong>Plateforme :</strong> Shopify</li>
+                                <li><strong>Site audité :</strong> bigshopvintage.com</li>
+                                <li><strong>Type :</strong> Analyse de surface d'attaque & bonnes pratiques sécurité</li>
                             </ul>
                         </div>
                         <div class="project-section">
+                            <h4>🧭 Portée de l'audit (Scope)</h4>
+                            <ul>
+                                <li>Analyse front-end (client-side)</li>
+                                <li>Headers HTTP & sécurité navigateur</li>
+                                <li>Exposition des ressources publiques</li>
+                                <li>Analyse des formulaires</li>
+                                <li>Bonnes pratiques e-commerce</li>
+                                <li>Configuration Shopify (OSINT & surface visible)</li>
+                            </ul>
+                            <p><strong>❌ Hors scope :</strong> Accès admin Shopify, exploitation serveur, attaques DoS, brute force</p>
+                        </div>
+                        <div class="project-section">
                             <h4>🔧 Méthodologie</h4>
-                            <ol>
-                                <li>Reconnaissance : analyse de l'application avec Burp Suite</li>
-                                <li>Cartographie : identification des endpoints et fonctionnalités</li>
-                                <li>Test de vulnérabilités : exploitation manuelle et automatisée</li>
-                                <li>Documentation : rapport détaillé avec preuves de concept</li>
-                            </ol>
+                            <ul>
+                                <li>🔎 <strong>Reconnaissance passive (OSINT)</strong></li>
+                                <li>🧱 <strong>OWASP Top 10 (Web)</strong></li>
+                                <li>🧠 <strong>MITRE ATT&CK (pré-attaque)</strong></li>
+                                <li>🔐 <strong>Bonnes pratiques Shopify</strong></li>
+                                <li>Analyse manuelle + outils automatisés</li>
+                            </ul>
                         </div>
                         <div class="project-section">
                             <h4>🛠️ Outils utilisés</h4>
                             <div class="tools-list">
                                 <span class="tool-tag">Burp Suite</span>
-                                <span class="tool-tag">SQLMap</span>
+                                <span class="tool-tag">SecurityHeaders</span>
+                                <span class="tool-tag">Wappalyzer</span>
+                                <span class="tool-tag">DevTools (Chrome)</span>
                                 <span class="tool-tag">OWASP ZAP</span>
-                                <span class="tool-tag">Nmap</span>
-                                <span class="tool-tag">Gobuster</span>
+                                <span class="tool-tag">Google Lighthouse</span>
                             </div>
                         </div>
                         <div class="project-section">
-                            <h4>✅ Résultat</h4>
-                            <p>Identification de 8 vulnérabilités critiques et 12 vulnérabilités moyennes. Création d'un rapport de sécurité professionnel avec recommandations de remédiation.</p>
+                            <h4>⚠️ Vulnérabilités & Points d'attention identifiés</h4>
+                            <div style="margin-top: 1rem;">
+                                <p><strong>1️⃣ Headers de sécurité incomplets (🟠 Moyen)</strong></p>
+                                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                    <li>Absence ou configuration partielle de Content-Security-Policy, X-Frame-Options, Referrer-Policy</li>
+                                    <li>Impact : Augmentation du risque XSS, clickjacking possible, fuite de données</li>
+                                </ul>
+                                <p style="margin-top: 1rem;"><strong>2️⃣ Chargement de scripts tiers (🟡 Faible à Moyen)</strong></p>
+                                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                    <li>Plusieurs scripts externes (tracking, analytics) - Risque de chaîne d'approvisionnement</li>
+                                </ul>
+                                <p style="margin-top: 1rem;"><strong>3️⃣ Protection XSS dépendante du navigateur (🟡 Faible)</strong></p>
+                                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                    <li>Pas de CSP stricte - Confiance sur les protections natives Shopify</li>
+                                </ul>
+                                <p style="margin-top: 1rem;"><strong>4️⃣ Absence de protection anti-bot visible (🟡 Faible)</strong></p>
+                                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                    <li>Pas de CAPTCHA sur certains formulaires publics - Risque de spam</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="project-section">
+                            <h4>✅ Bonnes pratiques observées</h4>
+                            <ul>
+                                <li>✔ HTTPS activé</li>
+                                <li>✔ Certificat SSL valide</li>
+                                <li>✔ Plateforme Shopify à jour</li>
+                                <li>✔ Pas d'exposition d'informations sensibles</li>
+                                <li>✔ Pas d'endpoints critiques exposés</li>
+                            </ul>
+                        </div>
+                        <div class="project-section">
+                            <h4>📊 Évaluation globale du risque</h4>
+                            <ul>
+                                <li><strong>Sécurité globale :</strong> 🟢 Bonne</li>
+                                <li><strong>Exposition front-end :</strong> 🟡 Modérée</li>
+                                <li><strong>Risque critique :</strong> ❌ Aucun</li>
+                                <li><strong>Conformité e-commerce :</strong> ✅ Conforme</li>
+                            </ul>
+                        </div>
+                        <div class="project-section">
+                            <h4>🛡️ Recommandations finales</h4>
+                            <ul>
+                                <li>Implémenter une Content Security Policy</li>
+                                <li>Réduire et auditer les scripts tiers</li>
+                                <li>Activer protections anti-bot</li>
+                                <li>Mettre en place une revue sécurité trimestrielle</li>
+                                <li>Surveiller les apps Shopify installées</li>
+                            </ul>
                         </div>
                         <div class="project-section">
                             <h4>📚 Ce que j'ai appris</h4>
-                            <p>Approfondissement de la méthodologie OWASP, maîtrise de Burp Suite, compréhension des mécanismes d'injection SQL et XSS.</p>
+                            <p>Limites et forces de la sécurité Shopify, importance des headers HTTP, gestion du risque sur plateformes SaaS, différence entre audit non intrusif et pentest, communication claire des risques à un non-tech.</p>
+                        </div>
+                        <div class="project-section">
+                            <h4>⚖️ Mention légale & éthique</h4>
+                            <p><em>Cet audit a été réalisé avec l'accord explicite du propriétaire du site, sans tentative d'exploitation intrusive. Aucune donnée sensible n'a été collectée ou stockée.</em></p>
                         </div>
                     </div>
                     <div class="project-footer">
                         <a href="#" class="project-link" target="_blank">
-                            <span>Voir sur GitHub</span>
+                            <span>Rapport d'audit (PDF)</span>
                             <span>→</span>
                         </a>
                         <a href="#" class="project-link" target="_blank">
-                            <span>Rapport détaillé</span>
+                            <span>Checklist sécurité Shopify</span>
                             <span>→</span>
                         </a>
                     </div>
