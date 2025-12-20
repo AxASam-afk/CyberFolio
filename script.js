@@ -442,6 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
         maxRadius: 120,
         // Opacité des bulles
         opacity: 0.15,
+        opacityLight: 0.25, // Opacité plus élevée en mode light pour les nuances de gris
         // Flou (blur)
         blur: 40,
         // Interaction souris (bonus)
@@ -479,8 +480,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Couleur aléatoire parmi les couleurs du thème
             this.color = colors[Math.floor(Math.random() * colors.length)];
             
-            // Opacité légèrement variable
-            this.opacity = CONFIG.opacity * (0.7 + Math.random() * 0.3);
+            // Opacité légèrement variable (ajustée selon le thème)
+            const baseOpacity = document.documentElement.getAttribute('data-theme') === 'light' 
+                ? CONFIG.opacityLight 
+                : CONFIG.opacity;
+            this.opacity = baseOpacity * (0.7 + Math.random() * 0.3);
         }
 
         update(mouseX, mouseY) {
@@ -579,17 +583,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Bubbles: Canvas context not available');
             return;
         }
-        
-        // Récupérer les couleurs du thème depuis CSS
-        const computedStyle = getComputedStyle(document.documentElement);
-        const primaryColor = computedStyle.getPropertyValue('--accent-primary').trim();
-        const secondaryColor = computedStyle.getPropertyValue('--accent-secondary').trim();
-        
-        // Convertir en RGB
-        const colors = [
-            hexToRgb(primaryColor),
-            hexToRgb(secondaryColor)
-        ];
 
         // Variables globales pour l'animation
         let bubbles = [];
@@ -597,6 +590,34 @@ document.addEventListener('DOMContentLoaded', function() {
         let mouseX = null;
         let mouseY = null;
         let isAnimating = false;
+        
+        // Fonction pour obtenir les couleurs selon le thème
+        function getColors() {
+            // Détecter le thème actuel
+            const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
+            
+            if (isLightMode) {
+                // Mode light : palette de gris variée (gris foncé, gris moyen, gris clair)
+                return [
+                    hexToRgb('#1a202c'), // Gris très foncé
+                    hexToRgb('#2d3748'), // Gris foncé
+                    hexToRgb('#4a5568'), // Gris moyen-foncé
+                    hexToRgb('#718096'), // Gris moyen
+                    hexToRgb('#a0aec0'), // Gris clair
+                    hexToRgb('#cbd5e0'), // Gris très clair
+                    hexToRgb('#e2e8f0')  // Gris presque blanc
+                ];
+            } else {
+                // Mode dark : couleurs du thème (bleu/vert)
+                const computedStyle = getComputedStyle(document.documentElement);
+                const primaryColor = computedStyle.getPropertyValue('--accent-primary').trim();
+                const secondaryColor = computedStyle.getPropertyValue('--accent-secondary').trim();
+                return [
+                    hexToRgb(primaryColor),
+                    hexToRgb(secondaryColor)
+                ];
+            }
+        }
 
         // Fonction pour redimensionner le canvas selon la section landing
         function resizeCanvas() {
@@ -650,6 +671,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(initializeBubbles, 100);
                 return;
             }
+
+            // Obtenir les couleurs selon le thème actuel
+            const colors = getColors();
 
             // Créer les bulles
             bubbles = [];
