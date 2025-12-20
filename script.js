@@ -66,15 +66,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.getElementById('navbar');
     const html = document.documentElement;
     
-    function updateNavbarBackground() {
+    // Fonction globale pour mettre à jour la navbar
+    window.updateNavbarBackground = function() {
+        if (!navbar) return;
         const isDark = html.getAttribute('data-theme') !== 'light';
         const darkColor = window.scrollY > 50 ? 'rgba(10, 14, 39, 0.98)' : 'rgba(10, 14, 39, 0.95)';
         const lightColor = window.scrollY > 50 ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 0.95)';
         navbar.style.backgroundColor = isDark ? darkColor : lightColor;
-    }
+    };
     
-    window.addEventListener('scroll', updateNavbarBackground);
-    updateNavbarBackground();
+    window.addEventListener('scroll', window.updateNavbarBackground);
+    window.updateNavbarBackground();
 });
 
 // ============================================
@@ -95,6 +97,13 @@ document.addEventListener('DOMContentLoaded', function() {
     html.setAttribute('data-theme', currentTheme);
     updateThemeIcon(currentTheme);
     
+    // Mettre à jour la navbar après un court délai pour s'assurer qu'elle est initialisée
+    setTimeout(() => {
+        if (typeof window.updateNavbarBackground === 'function') {
+            window.updateNavbarBackground();
+        }
+    }, 100);
+    
     if (themeToggle) {
         themeToggle.addEventListener('click', function() {
             const currentTheme = html.getAttribute('data-theme');
@@ -103,6 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
+            
+            // Mettre à jour la navbar immédiatement
+            if (typeof window.updateNavbarBackground === 'function') {
+                window.updateNavbarBackground();
+            }
         });
     }
     
