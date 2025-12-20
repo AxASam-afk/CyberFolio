@@ -514,6 +514,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         draw(ctx) {
+            // Sauvegarder le contexte
+            ctx.save();
+
             // Créer un gradient radial pour l'effet de lumière
             const gradient = ctx.createRadialGradient(
                 this.x - this.radius * 0.3,
@@ -528,17 +531,18 @@ document.addEventListener('DOMContentLoaded', function() {
             gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`);
             gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
 
+            // Effet de flou avec shadowBlur (doit être défini avant le fill)
+            ctx.shadowBlur = CONFIG.blur;
+            ctx.shadowColor = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity * 0.5})`;
+
             // Dessiner la bulle avec le gradient
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Effet de flou avec shadowBlur
-            ctx.shadowBlur = CONFIG.blur;
-            ctx.shadowColor = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`;
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            // Restaurer le contexte
+            ctx.restore();
         }
     }
 
@@ -559,12 +563,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     function initBubbles() {
         const canvas = document.getElementById('bubblesCanvas');
-        if (!canvas) return;
+        if (!canvas) {
+            console.warn('Bubbles: Canvas not found');
+            return;
+        }
 
         const landingSection = canvas.closest('.landing');
-        if (!landingSection) return;
+        if (!landingSection) {
+            console.warn('Bubbles: Landing section not found');
+            return;
+        }
 
         const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Bubbles: Canvas context not available');
+            return;
+        }
         
         // Récupérer les couleurs du thème depuis CSS
         const computedStyle = getComputedStyle(document.documentElement);
@@ -577,15 +591,23 @@ document.addEventListener('DOMContentLoaded', function() {
             hexToRgb(secondaryColor)
         ];
 
+        // Variables globales pour l'animation
+        let bubbles = [];
+        let animationId = null;
+        let mouseX = null;
+        let mouseY = null;
+        let isAnimating = false;
+
         // Fonction pour redimensionner le canvas selon la section landing
         function resizeCanvas() {
             const rect = landingSection.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                return true;
+            }
+            return false;
         }
-
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
 
         // Déterminer le nombre de bulles selon la taille de l'écran
         function getBubbleCount() {
@@ -595,18 +617,54 @@ document.addEventListener('DOMContentLoaded', function() {
             return CONFIG.bubbleCount.desktop;
         }
 
-        // Créer les bulles
-        const bubbles = [];
-        const bubbleCount = getBubbleCount();
-        
-        for (let i = 0; i < bubbleCount; i++) {
-            bubbles.push(new Bubble(canvas, colors));
+        // Fonction d'animation
+        function animate() {
+            if (!isAnimating || canvas.width === 0 || canvas.height === 0) {
+                return;
+            }
+
+            // Effacer le canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Mettre à jour et dessiner chaque bulle
+            bubbles.forEach(bubble => {
+                bubble.update(mouseX, mouseY);
+                bubble.draw(ctx);
+            });
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Fonction d'initialisation complète
+        function initializeBubbles() {
+            // Arrêter l'animation précédente si elle existe
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            isAnimating = false;
+
+            // Redimensionner le canvas
+            if (!resizeCanvas()) {
+                // Si le canvas n'a pas de taille, réessayer plus tard
+                setTimeout(initializeBubbles, 100);
+                return;
+            }
+
+            // Créer les bulles
+            bubbles = [];
+            const bubbleCount = getBubbleCount();
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                bubbles.push(new Bubble(canvas, colors));
+            }
+
+            // Démarrer l'animation
+            isAnimating = true;
+            animate();
         }
 
         // Position de la souris (relative à la section landing)
-        let mouseX = null;
-        let mouseY = null;
-
         if (CONFIG.mouseInteraction) {
             landingSection.addEventListener('mousemove', (e) => {
                 const rect = landingSection.getBoundingClientRect();
@@ -620,32 +678,47 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Fonction d'animation
-        let animationId;
-        function animate() {
-            // Effacer le canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Mettre à jour et dessiner chaque bulle
-            bubbles.forEach(bubble => {
-                bubble.update(mouseX, mouseY);
-                bubble.draw(ctx);
-            });
-
-            animationId = requestAnimationFrame(animate);
+        // Attendre que la section soit dimensionnée avant d'initialiser
+        function waitAndInit() {
+            const rect = landingSection.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                initializeBubbles();
+            } else {
+                setTimeout(waitAndInit, 100);
+            }
         }
 
-        // Démarrer l'animation
-        animate();
+        // Réinitialiser lors du redimensionnement
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvas();
+                // Recréer les bulles si nécessaire
+                if (bubbles.length === 0 || canvas.width !== canvas.width) {
+                    initializeBubbles();
+                }
+            }, 150);
+        });
 
         // Optimisation : pause l'animation quand la page n'est pas visible
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                cancelAnimationFrame(animationId);
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                isAnimating = false;
             } else {
-                animate();
+                if (bubbles.length > 0 && !isAnimating) {
+                    isAnimating = true;
+                    animate();
+                }
             }
         });
+
+        // Initialiser
+        waitAndInit();
     }
 
     // Attendre que le DOM soit chargé

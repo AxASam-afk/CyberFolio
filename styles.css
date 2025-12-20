@@ -87,6 +87,10 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.6;
+    /* Effet glassmorphism léger */
+    filter: blur(0.5px);
+    /* Assurer que le canvas reste derrière le contenu */
+    will-change: transform;
 }
 
 /* Respect de prefers-reduced-motion */
