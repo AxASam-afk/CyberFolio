@@ -557,6 +557,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById('bubblesCanvas');
         if (!canvas) return;
 
+        const landingSection = canvas.closest('.landing');
+        if (!landingSection) return;
+
         const ctx = canvas.getContext('2d');
         
         // Récupérer les couleurs du thème depuis CSS
@@ -570,10 +573,11 @@ document.addEventListener('DOMContentLoaded', function() {
             hexToRgb(secondaryColor)
         ];
 
-        // Fonction pour redimensionner le canvas
+        // Fonction pour redimensionner le canvas selon la section landing
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const rect = landingSection.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
         }
 
         resizeCanvas();
@@ -595,17 +599,18 @@ document.addEventListener('DOMContentLoaded', function() {
             bubbles.push(new Bubble(canvas, colors));
         }
 
-        // Position de la souris
+        // Position de la souris (relative à la section landing)
         let mouseX = null;
         let mouseY = null;
 
         if (CONFIG.mouseInteraction) {
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
+            landingSection.addEventListener('mousemove', (e) => {
+                const rect = landingSection.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
             });
 
-            document.addEventListener('mouseleave', () => {
+            landingSection.addEventListener('mouseleave', () => {
                 mouseX = null;
                 mouseY = null;
             });
