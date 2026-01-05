@@ -1,43 +1,45 @@
 import { motion } from 'framer-motion'
 import { useTheme } from '../contexts/ThemeContext'
+import BubblesBackground from '../components/BubblesBackground'
 
 const Services = () => {
   const { theme } = useTheme()
 
   const services = [
     {
-      icon: '🔍',
-      title: 'Audit de Sécurité',
+      icon: '🎨',
+      title: 'Design Web & UI/UX',
       description:
-        'Analyse complète de votre infrastructure pour identifier les vulnérabilités et proposer des recommandations concrètes.',
-      features: ['Analyse OWASP Top 10', 'Rapport détaillé', 'Recommandations prioritaires'],
+        'Création de designs modernes et intuitifs pour vos sites web et applications. Interface utilisateur optimisée pour une expérience fluide.',
+      features: ['Design responsive', 'Prototypage Figma/Adobe XD', 'Design system complet'],
     },
     {
-      icon: '🎯',
-      title: 'Pentesting Web',
+      icon: '💻',
+      title: 'Développement Frontend',
       description:
-        'Tests d\'intrusion sur vos applications web pour évaluer leur résistance aux attaques.',
-      features: ['Tests manuels et automatisés', 'Exploitation contrôlée', 'Write-up technique'],
+        'Développement de sites web modernes avec React, Vue.js ou technologies natives. Code propre, performant et maintenable.',
+      features: ['React / Vue.js / Next.js', 'Responsive design', 'Optimisation performance'],
     },
     {
-      icon: '🛡️',
-      title: 'Blue Team',
+      icon: '📱',
+      title: 'Design Mobile & Applications',
       description:
-        'Mise en place et optimisation de vos défenses, monitoring et réponse aux incidents.',
-      features: ['Configuration SIEM', 'Analyse de logs', 'Plan de réponse'],
+        'Conception d\'interfaces mobiles élégantes et fonctionnelles pour iOS et Android. Expérience utilisateur optimale sur tous les écrans.',
+      features: ['Design mobile-first', 'Prototypage interactif', 'Guidelines iOS/Android'],
     },
     {
-      icon: '📚',
-      title: 'Formation & Conseil',
+      icon: '🚀',
+      title: 'Refonte & Optimisation',
       description:
-        'Sensibilisation et formation de vos équipes aux bonnes pratiques de cybersécurité.',
-      features: ['Ateliers pratiques', 'Documentation', 'Support continu'],
+        'Modernisation de sites existants pour améliorer l\'expérience utilisateur, les performances et le design. Analyse et recommandations.',
+      features: ['Audit UX/UI', 'Refonte complète', 'Optimisation conversion'],
     },
   ]
 
   return (
-    <section className="min-h-screen py-24 md:py-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative min-h-screen py-24 md:py-32 overflow-hidden">
+      <BubblesBackground />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -47,7 +49,7 @@ const Services = () => {
             Mes <span className="text-cyan-400">Services</span>
           </h1>
           <p className="text-center text-slate-400 mb-12 max-w-2xl mx-auto">
-            Des services professionnels adaptés à vos besoins en cybersécurité.
+            Des services professionnels de web design et développement pour créer des expériences digitales exceptionnelles.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useTheme } from '../contexts/ThemeContext'
+import BubblesBackground from '../components/BubblesBackground'
 
 const Projects = () => {
   const { theme } = useTheme()
@@ -65,15 +66,17 @@ const Projects = () => {
 
   if (loading) {
     return (
-      <section className="min-h-screen py-24 md:py-32 flex items-center justify-center">
-        <div className="text-cyan-400 text-xl">Chargement des projets...</div>
+      <section className="relative min-h-screen py-24 md:py-32 flex items-center justify-center overflow-hidden">
+        <BubblesBackground />
+        <div className="text-cyan-400 text-xl relative z-10">Chargement des projets...</div>
       </section>
     )
   }
 
   return (
-    <section className="min-h-screen py-24 md:py-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative min-h-screen py-24 md:py-32 overflow-hidden">
+      <BubblesBackground />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

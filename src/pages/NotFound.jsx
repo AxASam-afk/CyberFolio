@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTheme } from '../contexts/ThemeContext'
+import BubblesBackground from '../components/BubblesBackground'
 
 const NotFound = () => {
   const { theme } = useTheme()
 
   return (
-    <section className="min-h-screen flex items-center justify-center py-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section className="relative min-h-screen flex items-center justify-center py-24 overflow-hidden">
+      <BubblesBackground />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
