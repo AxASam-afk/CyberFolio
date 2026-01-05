@@ -68,6 +68,12 @@ const Contact = () => {
       value: 'Profil HTB',
       link: '#',
     },
+    {
+      icon: '🔓',
+      label: 'Root-Me',
+      value: 'root-me.org/Lexiu',
+      link: 'https://www.root-me.org/Lexiu?lang=fr',
+    },
   ]
 
   return (
